@@ -3,7 +3,6 @@ const https = require('https');
 const url = require('url');
 const StringDecoder = require('string_decoder').StringDecoder;
 const fs = require('fs');
-const _data = require('./lib/data');
 const handlers = require('./lib/handlers')
 
 const config = require('./config')
@@ -29,15 +28,15 @@ httpsServer.listen(config.httpsPort, () => {
 });
 
 // encapsulate non-changing server settings
-const serverSetting = () => {
+const serverSetting = (req, res) => {
   const parsedUrl = url.parse(req.url, true);
   const path = parsedUrl.pathname;
   const trimmedPath = path.replace(/^\/+|\/+$/g, '');
 
   const method = req.method.toLowerCase();
-  const queryObject = parsedUrl.query
-  const headers = req.headers
-  const decoder = new StringDecoder('utf-8')
+  const queryObject = parsedUrl.query;
+  const headers = req.headers;
+  const decoder = new StringDecoder('utf-8');
    buffer = '';  
   req.on('data', data => {
     buffer += decoder.write(data);
@@ -52,6 +51,7 @@ const serverSetting = () => {
       queryObject,
       method,
       headers,
+      // payload: buffer,
       payload: JSON.parse(buffer),
     }
 
