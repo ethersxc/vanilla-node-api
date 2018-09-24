@@ -4,6 +4,7 @@ const url = require('url');
 const StringDecoder = require('string_decoder').StringDecoder;
 const fs = require('fs');
 const handlers = require('./lib/handlers')
+const helpers = require('./lib/helpers')
 
 const config = require('./config')
 
@@ -51,8 +52,7 @@ const serverSetting = (req, res) => {
       queryObject,
       method,
       headers,
-      // payload: buffer,
-      payload: JSON.parse(buffer),
+      payload: helpers.parseJsonToObject(buffer), // because not obligatery JSON obj
     }
 
     choosenHandler(data, (statusCode = 200, payload = {}) => {
@@ -66,6 +66,7 @@ const serverSetting = (req, res) => {
 
 // ROUTER
 const router = {
-  sample: handlers.sample,
-  users: handlers.users,
+  'sample': handlers.sample,
+  'users': handlers.users,
+  'tokens': handlers.tokens,
 }
